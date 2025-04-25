@@ -102,6 +102,7 @@ grid-gap: 20px;
   color: #fff;
   background-color: var(--second-color);
   border-radius: 50%;
+  text-decoration: none;
 }
 
 
