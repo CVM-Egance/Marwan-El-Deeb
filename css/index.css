@@ -268,7 +268,7 @@ body {
 .landing .intro p {
     font-weight: bold;
     color: var(--second-color);
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1.8;
     text-transform: capitalize;
 }
