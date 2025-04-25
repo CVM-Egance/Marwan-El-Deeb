@@ -90,6 +90,9 @@ grid-gap: 20px;
   color: var(--second-color);
 }
 
+.header .a_edite a {
+    text-decoration: none;
+}
 
 
 .header .a_edite i {
@@ -102,7 +105,7 @@ grid-gap: 20px;
   color: #fff;
   background-color: var(--second-color);
   border-radius: 50%;
-  text-decoration: none;
+  
 }
 
 
