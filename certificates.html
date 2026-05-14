@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marwan El-Deeb | Certificates</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#fafafa',
+                        surface: '#ffffff',
+                        'surface-elevated': '#f5f5f7',
+                        primary: '#7c3aed',
+                        'primary-light': '#a78bfa',
+                        'primary-dark': '#5b21b6',
+                        text: '#1a1a2e',
+                        'text-secondary': '#4a4a68',
+                        'text-muted': '#8a8aa3',
+                    },
+                    fontFamily: {
+                        arabic: ['Noto Sans Arabic', 'sans-serif'],
+                        english: ['Space Grotesk', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root { --primary: #7c3aed; --primary-light: #a78bfa; --bg: #fafafa; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #1a1a2e; font-family: 'Noto Sans Arabic', sans-serif; overflow-x: hidden; cursor: none; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+
+        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(124, 58, 237, 0.08); box-shadow: 0 8px 32px rgba(124, 58, 237, 0.06); }
+        .glass-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(124, 58, 237, 0.1); box-shadow: 0 4px 24px rgba(124, 58, 237, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .glass-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 30px 80px rgba(124, 58, 237, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8); border-color: rgba(124, 58, 237, 0.25); }
+
+        .gradient-text { background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 50%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradient-shift 8s ease infinite; }
+        @keyframes gradient-shift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        .cursor-main { width: 40px; height: 40px; border: 2px solid var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99999; transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s, height 0.3s, background 0.3s; transform: translate(-50%, -50%); mix-blend-mode: difference; display: flex; align-items: center; justify-content: center; }
+        .cursor-main.hover { width: 80px; height: 80px; background: rgba(124, 58, 237, 0.1); border-color: transparent; backdrop-filter: blur(4px); }
+        .cursor-main.click { transform: translate(-50%, -50%) scale(0.8); }
+        .cursor-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); }
+
+        .magnetic-wrap { display: inline-block; position: relative; }
+        .magnetic-btn { position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .magnetic-btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.2); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
+        .magnetic-btn:hover::before { width: 300px; height: 300px; }
+
+        .reveal-up { opacity: 0; transform: translateY(60px); }
+        .reveal-scale { opacity: 0; transform: scale(0.9); }
+
+        .cert-img { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cert-card:hover .cert-img { transform: scale(1.05); }
+
+        .lang-en { display: none; }
+        html[dir="ltr"] .lang-ar { display: none; }
+        html[dir="ltr"] .lang-en { display: block; }
+        html[dir="ltr"] .lang-en-inline { display: inline; }
+        .lang-en-inline { display: none; }
+        html[dir="ltr"] .lang-ar-inline { display: none; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        .filter-btn { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .filter-btn.active { background: var(--primary); color: white; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3); }
+        .filter-btn:not(.active):hover { background: rgba(124, 58, 237, 0.1); }
+
+        .cert-card { opacity: 1; transform: scale(1); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cert-card.hidden-cert { opacity: 0; transform: scale(0.8); pointer-events: none; position: absolute; }
+
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            .cursor-main, .cursor-dot { display: none !important; }
+        }
+
+        #loader { position: fixed; inset: 0; background: #fafafa; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-text { font-size: 4rem; font-weight: 700; background: linear-gradient(135deg, #5b21b6, #7c3aed, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .loader-bar { width: 200px; height: 3px; background: rgba(124, 58, 237, 0.1); border-radius: 10px; margin-top: 2rem; overflow: hidden; }
+        .loader-progress { height: 100%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: 10px; width: 0%; transition: width 0.3s; }
+
+        .lightbox { position: fixed; inset: 0; z-index: 100000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 16px; transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .lightbox.active img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.3s; }
+        .lightbox-close:hover { transform: rotate(90deg); }
+    </style>
+</head>
+<body>
+
+    <div class="noise-overlay"></div>
+    <div class="cursor-main" id="cursor"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <div id="loader">
+        <div class="loader-text font-english">Certificates</div>
+        <div class="loader-bar"><div class="loader-progress" id="loader-progress"></div></div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-close">
+            <svg class="w-6 h-6 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <img id="lightbox-img" src="" alt="Certificate">
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500" style="transform: translateY(-100%);">
+        <div class="glass mx-4 md:mx-8 mt-4 rounded-2xl px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold gradient-text font-english tracking-tighter hover:opacity-80 transition-opacity">M.El-Deeb</a>
+
+                <div class="hidden md:flex items-center gap-8">
+
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleLanguage()" class="magnetic-btn px-5 py-2.5 rounded-full border-2 border-primary/20 text-primary hover:bg-primary hover:text-white transition-all duration-300 text-sm font-semibold font-english">
+                        <span class="lang-ar">EN</span><span class="lang-en">عربي</span>
+                    </button>
+                    <a href="index.html" class="magnetic-btn px-5 py-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 text-sm font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span class="font-arabic lang-ar">الرئيسية</span>
+                        <span class="font-english lang-en">Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-32 pb-16">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary-light/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass mb-8 animate-float">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                <span class="text-primary text-sm font-semibold font-arabic lang-ar">معتمدة وموثقة</span>
+                <span class="text-primary text-sm font-semibold font-english lang-en">Certified & Verified</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-english tracking-tight">
+                <span class="block text-text">My</span>
+                <span class="block gradient-text mt-2">Certificates</span>
+            </h1>
+
+            <p class="text-text-secondary text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed font-arabic lang-ar font-light">
+                مجموعة من <span class="text-primary font-semibold"> شهادات معتمدة</span> من منصات تعليمية عالمية ومحلية مرموقة
+            </p>
+            <p class="text-text-secondary text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed font-english lang-en font-light">
+                A collection of <span class="text-primary font-semibold">  certificates</span> from prestigious global and local educational platforms
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="py-8 sticky  top-14 z-40">
+        <div class="container  mx-auto px-6">
+            <div class="glass rounded-2xl p-4 flex flex-wrap justify-center gap-3 reveal-up">
+                <button onclick="filterCerts('all')" class="filter-btn active px-6 py-2.5 rounded-full text-sm font-semibold border border-primary/20" data-filter="all">
+                    <span class="font-arabic lang-ar">الكل</span>
+                    <span class="font-english lang-en">All</span>
+                </button>
+                <button onclick="filterCerts('tech')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold border border-primary/20 text-text-secondary" data-filter="tech">
+                    <span class="font-arabic lang-ar">تقنية</span>
+                    <span class="font-english lang-en">Tech</span>
+                </button>
+                <button onclick="filterCerts('language')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold border border-primary/20 text-text-secondary" data-filter="language">
+                    <span class="font-arabic lang-ar">لغات</span>
+                    <span class="font-english lang-en">Languages</span>
+                </button>
+                <button onclick="filterCerts('soft')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold border border-primary/20 text-text-secondary" data-filter="soft">
+                    <span class="font-arabic lang-ar">مهارات شخصية</span>
+                    <span class="font-english lang-en">Soft Skills</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Grid -->
+    <section class="py-16 pb-32">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto" id="cert-grid">
+
+                <!-- Certificate 1: Cyber Security (Edraak) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/Cuper security.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Cuper security.jpg" alt="Cyber Security" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Cyber Security</h3>
+                        <p class="text-text-secondary text-sm">Specialization covering attack techniques, basics, intrusion protection, and career path</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">16/6/2025</span>
+                            <span class="text-primary text-xs font-semibold">Specialization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 2: Basics in Cyber Security (HP) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/Basics in cyber securty.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Basics in cyber securty.jpg" alt="Basics in Cyber Security" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">HP LIFE</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2 font-arabic lang-ar">مقدمة في الأمن السيبراني</h3>
+                        <h3 class="font-bold text-lg text-text mb-2 font-english lang-en">Basics in Cyber Security</h3>
+                        <p class="text-text-secondary text-sm font-arabic lang-ar">شهادة من مؤسسة HP في أساسيات الأمن السيبراني وحماية البيانات</p>
+                        <p class="text-text-secondary text-sm font-english lang-en">HP Foundation certificate in cybersecurity basics and data protection</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">5/9/2024</span>
+                            <span class="text-primary text-xs font-semibold">HP Foundation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 3: Python Programming (Mahara-Tech) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/python programming basics.png')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/python programming basics.png" alt="Python Programming" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Mahara-Tech</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Python Programming Basics</h3>
+                        <p class="text-text-secondary text-sm">ITI Platform Mahara-Tech - Artificial Intelligence Academy</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">28/3/2025</span>
+                            <span class="text-primary text-xs font-semibold">1h 38m</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 4: Modern AI (Cisco) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/Modern AI.png')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Modern AI.png" alt="Modern AI" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Cisco</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Introduction to Modern AI</h3>
+                        <p class="text-text-secondary text-sm">Cisco Networking Academy - Ministry of Education Alexandria</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">21/11/2025</span>
+                            <span class="text-primary text-xs font-semibold">Cisco</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 5: IT Customer Support (Cisco) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/IT Custmer Support Basics.png')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/IT Custmer Support Basics.png" alt="IT Customer Support" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Cisco</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">IT Customer Support Basics</h3>
+                        <p class="text-text-secondary text-sm">Cisco Networking Academy - Ministry of Education Alexandria</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">22/11/2025</span>
+                            <span class="text-primary text-xs font-semibold">Cisco</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 6: Robo Maker (Edraak) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/Robo Maker.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Robo Maker.jpg" alt="Robo Maker" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Robo Maker</h3>
+                        <p class="text-text-secondary text-sm">Robotics basics, sensors, electronics, and 3D design programs</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">4/4/2025</span>
+                            <span class="text-primary text-xs font-semibold">3 Hours</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 7: English C1 (EF SET) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="language" onclick="openLightbox('certificates/English test C1.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/English test C1.jpg" alt="English C1" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">EF SET</span>
+                            <span class="px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold">Language</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">English Certificate C1 Advanced</h3>
+                        <p class="text-text-secondary text-sm">Score: 63/100 - CEFR C1 Advanced Level (Reading & Listening)</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">11/4/2025</span>
+                            <span class="text-primary text-xs font-semibold">C1 Advanced</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 8: English Conversational (Edraak/British Council) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="language" onclick="openLightbox('certificates/English conversation Skills.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/English conversation Skills.jpg" alt="English Conversational" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold">Language</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">English Conversational Skills</h3>
+                        <p class="text-text-secondary text-sm">British Council - Beginners Series (3 Courses)</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">29/7/2025</span>
+                            <span class="text-primary text-xs font-semibold">British Council</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 9: ICDL (Edraak) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="tech" onclick="openLightbox('certificates/ICDL.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/ICDL.jpg" alt="ICDL" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">Tech</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">ICDL Base</h3>
+                        <p class="text-text-secondary text-sm">International Computer Driving Licence - Computer Essentials, Word, Excel, Internet</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">7/8/2024</span>
+                            <span class="text-primary text-xs font-semibold">ICDL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 10: Leadership Skills (Edraak) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="soft" onclick="openLightbox('certificates/Leadership Skills.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Leadership Skills.jpg" alt="Leadership Skills" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-bold">Soft Skills</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Leadership Skills</h3>
+                        <p class="text-text-secondary text-sm">Leadership personality, psychological traits, motivation, and positive influence</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">15/3/2025</span>
+                            <span class="text-primary text-xs font-semibold">3 Hours</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 11: Time and Stress Management (Edraak) -->
+                <div class="cert-card reveal-up glass-card rounded-3xl overflow-hidden cursor-pointer" data-category="soft" onclick="openLightbox('certificates/Time and strees management.jpg')">
+                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/5 to-primary-light/5 relative">
+                        <img src="certificates/Time and strees management.jpg" alt="Time and Stress Management" class="cert-img w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-6">
+                            <span class="text-white font-semibold flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                Click to enlarge
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold">Edraak</span>
+                            <span class="px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-xs font-bold">Soft Skills</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-text mb-2">Time and Stress Management</h3>
+                        <p class="text-text-secondary text-sm">Time management principles, productivity, and quality of life improvement</p>
+                        <div class="mt-4 pt-4 border-t border-primary/10 flex justify-between items-center">
+                            <span class="text-text-muted text-xs">15/3/2025</span>
+                            <span class="text-primary text-xs font-semibold">3 Hours</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-24 bg-white/30">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div class="reveal-up text-center">
+                    <div class="text-5xl font-bold gradient-text mb-2 font-english">11</div>
+                    <div class="text-text-secondary text-sm font-arabic lang-ar">شهادة معتمدة</div>
+                    <div class="text-text-secondary text-sm font-english lang-en">Certificates</div>
+                </div>
+                <div class="reveal-up text-center">
+                    <div class="text-5xl font-bold gradient-text mb-2 font-english">5</div>
+                    <div class="text-text-secondary text-sm font-arabic lang-ar">منصات تعليمية</div>
+                    <div class="text-text-secondary text-sm font-english lang-en">Platforms</div>
+                </div>
+                <div class="reveal-up text-center">
+                    <div class="text-5xl font-bold gradient-text mb-2 font-english">3</div>
+                    <div class="text-text-secondary text-sm font-arabic lang-ar">مجالات متخصصة</div>
+                    <div class="text-text-secondary text-sm font-english lang-en">Categories</div>
+                </div>
+                <div class="reveal-up text-center">
+                    <div class="text-5xl font-bold gradient-text mb-2 font-english">C1</div>
+                    <div class="text-text-secondary text-sm font-arabic lang-ar">مستوى إنجليزي</div>
+                    <div class="text-text-secondary text-sm font-english lang-en">English Level</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-primary/5 bg-white/50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-2xl font-bold gradient-text font-english">M.El-Deeb</div>
+                <div class="flex gap-6">
+                    <a href="mailto:mrawanshreef@gmail.com" class="text-text-muted hover:text-primary transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>
+                    <a href="tel:01277388260" class="text-text-muted hover:text-primary transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></a>
+                    <a href="https://cvm-egance.github.io/Marwan-El-Deeb/" target="_blank" class="text-text-muted hover:text-primary transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg></a>
+                </div>
+                <p class="text-text-muted text-sm font-arabic lang-ar">جميع الحقوق محفوظة © 2026 مروان الديب</p>
+                <p class="text-text-muted text-sm font-english lang-en">All Rights Reserved © 2026 Marwan El-Deeb</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lightbox
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Filter
+        function filterCerts(category) {
+            const cards = document.querySelectorAll('.cert-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.classList.add('active');
+                    btn.classList.remove('text-text-secondary');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-text-secondary');
+                }
+            });
+
+            cards.forEach((card, index) => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.classList.remove('hidden-cert');
+                    gsap.to(card, { opacity: 1, scale: 1, duration: 0.5, delay: index * 0.05, ease: 'power3.out' });
+                } else {
+                    gsap.to(card, { 
+                        opacity: 0, 
+                        scale: 0.8, 
+                        duration: 0.3, 
+                        onComplete: () => card.classList.add('hidden-cert')
+                    });
+                }
+            });
+        }
+
+        // Language Toggle
+        function toggleLanguage() {
+            const html = document.documentElement;
+            const isRTL = html.getAttribute('dir') === 'rtl';
+            if (isRTL) { html.setAttribute('dir', 'ltr'); html.setAttribute('lang', 'en'); }
+            else { html.setAttribute('dir', 'rtl'); html.setAttribute('lang', 'ar'); }
+        }
+
+        // Loading
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('loader-progress');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 15;
+                if (width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        gsap.to('#loader', {
+                            opacity: 0,
+                            duration: 0.8,
+                            ease: 'power2.inOut',
+                            onComplete: () => {
+                                document.getElementById('loader').style.display = 'none';
+                                initApp();
+                            }
+                        });
+                    }, 300);
+                }
+                progress.style.width = width + '%';
+            }, 100);
+        });
+
+        // Cursor
+        function initCursor() {
+            const cursor = document.getElementById('cursor');
+            const cursorDot = document.getElementById('cursor-dot');
+            let cursorX = 0, cursorY = 0;
+            let dotX = 0, dotY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                cursorX = e.clientX;
+                cursorY = e.clientY;
+            });
+
+            function animateCursor() {
+                dotX += (cursorX - dotX) * 0.5;
+                dotY += (cursorY - dotY) * 0.5;
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+                cursorDot.style.left = dotX + 'px';
+                cursorDot.style.top = dotY + 'px';
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            const interactiveElements = document.querySelectorAll('a, button, .glass-card, .cert-card');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+            document.addEventListener('mousedown', () => cursor.classList.add('click'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('click'));
+        }
+
+        // GSAP
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.to('#navbar', { y: 0, duration: 1, delay: 0.5, ease: 'power3.out' });
+
+            const revealElements = document.querySelectorAll('.reveal-up');
+            revealElements.forEach((el, i) => {
+                gsap.to(el, {
+                    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+                    y: 0, opacity: 1, duration: 1, delay: i * 0.05, ease: 'power3.out'
+                });
+            });
+        }
+
+        function initApp() {
+            initCursor();
+            initAnimations();
+        }
+    </script>
+</body>
+</html>
